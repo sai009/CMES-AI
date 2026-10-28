@@ -74,6 +74,10 @@ flowchart TB
     style TRANSPORT fill:#fce4ec,stroke:#c2185b,stroke-width:2px
 ```
 
+![Two Worlds Architecture](assets/01-two-worlds.png)
+
+*Figure: Cloud build pipeline (left) produces signed packs transported via USB/WiFi to edge device (right) which serves answers fully offline.*
+
 ### 2.2 Hardware Constraints
 - **Edge device:** Single-board computer (NVIDIA Jetson Orin Nano / Raspberry Pi 5 + NVMe)
 - **Power:** Solar + battery (target < 10W average)
@@ -142,6 +146,10 @@ flowchart LR
     style STAGE3 fill:#e8f5e9,stroke:#388e3c,stroke-width:2px
 ```
 
+![PDF Ingest & Table Preservation](assets/02-pdf-ingest.png)
+
+*Figure: Stage 1 extracts text and tables with full geometry (headers, merged cells, bounding boxes); Stage 3 runs 8 fail-closed gates and seals the pack with Ed25519 signature chain.*
+
 ---
 
 ## 4. Runtime Flow (Edge Device)
@@ -175,6 +183,10 @@ sequenceDiagram
     SERVER-->>UI: Stream answer (SSE)
     UI-->>HW: Cited answer + highlights + page image
 ```
+
+![Search & Rerank Flow](assets/04-search-rerank.png)
+
+*Figure: Dual search (BM25 + HNSW) → cross-encoder rerank → abstain gate → table-first answer with cell highlights.*
 
 ---
 
@@ -266,7 +278,16 @@ sequenceDiagram
 
 ---
 
-## 10. References
+## 10. Prototype Evidence (Frames from Working System)
+
+| Frame | Description |
+|-------|-------------|
+| ![Test Console](assets/05-test-console.png) | **Test Console (`/ui/`):** Ask tab shows cited answer, highlighted table cells, source page with cited region boxed; Build/Gates/Update tabs for engineers. |
+| ![Cite or Abstain](assets/06-cite-abstain.png) | **Core Promise:** "Cite, or abstain." Verifiable, safe, offline-first for those who cannot wait for a signal. |
+
+---
+
+## 11. References
 
 - WHO Pocket Book of Hospital Care for Children (2013/2020)
 - WHO Essential Medicines List (2023)

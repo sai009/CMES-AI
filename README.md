@@ -52,7 +52,8 @@ This repository is a **phased migration** of the working TWB v1.1 prototype into
 CMES-AI/
 ├── README.md                          # This file
 ├── docs/
-│   └── 00-problem-statement.md        # ✅ ONLY FILE THAT EXISTS
+│   ├── 00-problem-statement.md        # ✅ ONLY FILE THAT EXISTS
+│   └── assets/                        # Architecture frames from prototype video
 ├── spec/                              # 📭 Empty (Phase 1)
 ├── src/                               # 📭 Empty (Phases 2-7)
 ├── tests/                             # 📭 Empty
@@ -86,6 +87,12 @@ CMES-AI/
 
 ## 🏗️ Architecture at a Glance (from Phase 0)
 
+### System Overview: Cloud Build → Edge Runtime
+
+| Cloud (Build-Time Only) | Transport | Edge (Runtime) |
+|-------------------------|-----------|----------------|
+| ![Two Worlds](docs/assets/01-two-worlds.png) | Signed Pack (USB / WiFi / Sneakernet) | ![Search & Rerank](docs/assets/04-search-rerank.png) |
+
 ```mermaid
 flowchart LR
     subgraph CLOUD["☁️ CLOUD (Build-Time Only)"]
@@ -108,6 +115,28 @@ flowchart LR
 ```
 
 **Key principle:** Cloud = build-time only. Edge = runtime, fully offline.
+
+### Build Pipeline (What Happens in the Cloud)
+
+| Stage | Frame | Description |
+|-------|-------|-------------|
+| **1. Ingest (Zero LLM)** | ![PDF Ingest](docs/assets/02-pdf-ingest.png) | pdfplumber extracts text + tables; custom geometry resolves headers, merged cells, bboxes; second-reader vision verify |
+| **2. Enrich (Optional NIM)** | — | NIM chat model writes search helpers (aliases, alt questions); numbers not in passage discarded |
+| **3. Index & Sign** | ![Gates & Signing](docs/assets/03-gates-signing.png) | NIM embed → HNSW vectors + SQLite FTS5; 8 fail-closed gates; Ed25519 signature chain (Root → CI) |
+
+### Runtime Flow (What Happens on the Edge)
+
+| Step | Frame | Description |
+|------|-------|-------------|
+| **Search & Rerank** | ![Search & Rerank](docs/assets/04-search-rerank.png) | Dual search: BM25 (FTS5) + Vector (HNSW/ONNX embed) → Cross-encoder rerank (ONNX) → Abstain if below threshold |
+| **Table-First Answer** | — | Tables returned verbatim; matching cell highlighted with row/col headers; verifier checks every number in source |
+| **Test Console** | ![Test Console](docs/assets/05-test-console.png) | `/ui/` served by edge: Ask / Build / Gates / Update tabs; dev banner; disclaimer on every screen |
+
+### Core Promise
+
+| Frame | Description |
+|-------|-------------|
+| ![Cite or Abstain](docs/assets/06-cite-abstain.png) | **Cite, or abstain.** Every answer cites source or says "not found". Zero generated doses. Verifiable, safe, offline-first. |
 
 ---
 
@@ -164,4 +193,4 @@ Apache 2.0 — to be added in Phase 1
 
 ---
 
-*Last updated: Phase 0 complete. Repository contains only `docs/00-problem-statement.md`. All implementation phases pending.*
+*Last updated: Phase 0 complete. Repository contains `docs/00-problem-statement.md` + `docs/assets/*.png` (6 architecture frames from prototype video). All implementation phases pending.*
