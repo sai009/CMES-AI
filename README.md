@@ -3,216 +3,165 @@
 > **Mission:** Offline-first clinical reference assistant for field health workers in low-connectivity regions. Every answer cites its source or honestly says "not found".
 
 [![Phase](https://img.shields.io/badge/Phase-0%20Complete-blue)]()
-[![Tests](https://img.shields.io/badge/Tests-31%2F31%20passing-brightgreen)]()
+[![Source](https://img.shields.io/badge/Source-TWB%20v1.1%20Prototype-orange)](https://github.com/sai009/offline-medical-qa)
 [![License](https://img.shields.io/badge/License-Apache%202.0-green)]()
 
 ---
 
-## 📋 Project Overview
+## 📋 Project Status: **Early Migration — Phase 0 Complete**
 
-CMES-AI is a **phased migration** of the TWB v1.1 prototype ([offline-medical-qa](https://github.com/sai009/offline-medical-qa)) into a production-ready, team-maintainable codebase.
+This repository is a **phased migration** of the working TWB v1.1 prototype into a production-ready, team-maintainable codebase.
 
-**Current Status:** Phase 0 complete (Problem Statement). Phases 1–10 planned.
+**What exists today:**
+- ✅ Phase 0: Problem Statement with architecture diagrams (`docs/00-problem-statement.md`)
+- 📦 Source prototype: [offline-medical-qa@9e5f42d](https://github.com/sai009/offline-medical-qa/commit/9e5f42d) — 31/31 tests passing, full pipeline implemented
 
-### Architecture at a Glance
+**What's coming (per phased plan):**
+- Phase 1: Architecture decisions & frozen contracts (NEW WORK)
+- Phases 2–7: Copy working implementation from prototype (NO REWORK)
+- Phase 8: Hardware benchmarks (requires procurement)
+- Phase 9: CI/CD & release engineering (NEW WORK)
+- Phase 10: Clinical validation (NEW WORK — hard blocker)
+
+---
+
+## 🗓️ Phase Tracker (Source of Truth)
+
+| Phase | Title | Status | Type | Target |
+|-------|-------|--------|------|--------|
+| **0** | **Problem Statement** | ✅ **Done** | New work | Week 1 |
+| **1** | Architecture & Contracts | ⏳ Planned | New work | Week 2 |
+| **2** | Ingestion Pipeline | ⏳ Planned | **Copy from prototype** | Week 3 |
+| **3** | Enrichment Pipeline | ⏳ Planned | **Copy from prototype** | Week 3 |
+| **4** | Indexing & Packing | ⏳ Planned | **Copy from prototype** | Week 4 |
+| **5** | Edge Runtime | ⏳ Planned | **Copy from prototype** | Week 4 |
+| **6** | Evaluation Gates | ⏳ Planned | **Copy from prototype** | Week 4 |
+| **7** | Test Console (UI) | ⏳ Planned | **Copy from prototype** | Week 4 |
+| **8** | Benchmarks & Hardware | ⏳ Planned | New work + HW | Week 6–10 |
+| **9** | CI/CD & Release Engineering | ⏳ Planned | New work | Week 6–8 |
+| **10** | Clinical Validation | ⏳ Planned | **New work — blocker** | Week 4–12 |
+
+> **Legend:** ✅ Done | 🔄 In Progress | ⏳ Planned | ❌ Blocked  
+> **Type:** "Copy from prototype" = code exists in source repo, just needs migration. "New work" = must be built from scratch.
+
+---
+
+## 📁 Current Repository Structure (Reality)
+
+```
+CMES-AI/
+├── README.md                          # This file
+├── docs/
+│   └── 00-problem-statement.md        # ✅ ONLY FILE THAT EXISTS
+├── spec/                              # 📭 Empty (Phase 1)
+├── src/                               # 📭 Empty (Phases 2-7)
+├── tests/                             # 📭 Empty
+├── benchmarks/                        # 📭 Empty
+├── scripts/                           # 📭 Empty
+├── golden/                            # 📭 Empty (Phase 10)
+└── .github/workflows/                 # 📭 Empty (Phase 9)
+```
+
+> **No setup scripts, no source code, no tests yet.** Those come from the prototype in Phases 2–7.
+
+---
+
+## 🔗 Source Prototype (What We're Migrating)
+
+| Component | Source Location | Tests | Status |
+|-----------|-----------------|-------|--------|
+| Ingest (PDF→chunks, zero LLM) | `ingest/ingest.py` | 27 unit | ✅ Working |
+| Enrich (NIM chat, optional) | `enrich/enrich.py` | 4 NIM mock | ✅ Working |
+| Indexer (SQLite+FTS5+HNSW+sign) | `indexer/build_pack.py` | Included | ✅ Working |
+| Edge Runtime (stdlib+ONNX+SSE) | `edge/core.py`, `edge/server.py` | Included | ✅ Working |
+| Gates (8 fail-closed) | `eval/gates/run_gates.py` | Included | ✅ Working |
+| Pipeline Orchestrator | `pipeline/run.py` | Included | ✅ Working |
+| Test Console (/ui/) | `ui/` + server static | 12 UI smoke | ✅ Working |
+| Benchmarks | `benchmarks/run_hardware_benchmarks.py` | — | Script ready |
+| Setup Scripts | `setup.py`, `setup.sh`, `setup.ps1`, `setup.bat` | — | ✅ Working |
+
+**All 31 tests pass on the prototype.** Migration = copy + restructure, not rewrite.
+
+---
+
+## 🏗️ Architecture at a Glance (from Phase 0)
 
 ```mermaid
 flowchart LR
     subgraph CLOUD["☁️ CLOUD (Build-Time Only)"]
-        BUILDER["Builder"]
-        NIM["NVIDIA NIM"]
+        BUILDER["Builder Machine"]
+        NIM["NVIDIA NIM API"]
+        PDF["Source PDFs"]
+        BUILDER --> PDF
+        BUILDER --> NIM
     end
 
-    subgraph EDGE["📱 EDGE (Runtime)"]
-        SERVER["Edge Server"]
+    subgraph EDGE["📱 EDGE DEVICE (Runtime)"]
+        SERVER["Edge Server (stdlib)"]
         ONNX["ONNX Models"]
+        UI["Test Console (/ui/)"]
+        SERVER --> ONNX
+        SERVER --> UI
     end
 
-    BUILDER -->|"Signed Pack"| EDGE
-    SERVER --> ONNX
+    BUILDER -->|"Signed Pack (USB/WiFi)"| EDGE
 ```
 
-- **Cloud (build-time):** PDF ingestion → NIM enrichment/embedding → SQLite pack + Ed25519 signing
-- **Edge (runtime):** Stdlib HTTP server, FTS5+HNSW search, ONNX rerank, SSE streaming, signed atomic updates
-- **Zero cloud at runtime** — works fully offline
+**Key principle:** Cloud = build-time only. Edge = runtime, fully offline.
 
 ---
 
-## 🗓️ Phase Tracker
+## 📚 Documentation Index (Living)
 
-| Phase | Title | Status | Owner | Docs | Target |
-|-------|-------|--------|-------|------|--------|
-| **0** | **Problem Statement** | ✅ **Done** | Product + Clinical | [`docs/00-problem-statement.md`](docs/00-problem-statement.md) | Week 1 |
-| **1** | Architecture & Contracts | 🔄 Planned | Tech Lead | `docs/01-architecture-decisions.md`, `spec/` | Week 2 |
-| **2** | Ingestion Pipeline | 🔄 Planned | Backend | `src/ingest/` | Week 3 |
-| **3** | Enrichment Pipeline | 🔄 Planned | Backend | `src/enrich/` | Week 3 |
-| **4** | Indexing & Packing | 🔄 Planned | Backend | `src/indexer/` | Week 4 |
-| **5** | Edge Runtime | 🔄 Planned | Backend/Embedded | `src/edge/` | Week 4 |
-| **6** | Evaluation Gates | 🔄 Planned | ML/QA | `src/eval/` | Week 4 |
-| **7** | Test Console (UI) | 🔄 Planned | Frontend | `src/ui/` | Week 4 |
-| **8** | Benchmarks & Hardware | 🔄 Planned | Embedded | `benchmarks/` | Week 6–10 |
-| **9** | CI/CD & Release Engineering | 🔄 Planned | DevOps | `.github/workflows/` | Week 6–8 |
-| **10** | Clinical Validation | 🔄 Planned | Clinical | `golden/` | Week 4–12 |
-
-> **Legend:** ✅ Done | 🔄 In Progress | ⏳ Planned | ❌ Blocked
+| Document | Phase | Status |
+|----------|-------|--------|
+| [Problem Statement](docs/00-problem-statement.md) | 0 | ✅ **Complete** — clinical problem, users, constraints, 3 Mermaid diagrams |
+| [Architecture Decisions](docs/01-architecture-decisions.md) | 1 | ⏳ Planned — ADR log, frozen contracts |
+| [Requirements](docs/02-requirements.md) | 1 | ⏳ Planned |
+| [Safety Rules](docs/03-safety-rules.md) | 1 | ⏳ Planned |
+| [Production Readiness](docs/04-production-readiness.md) | 9+ | ⏳ Planned |
 
 ---
 
-## 📁 Repository Structure
-
-```
-CMES-AI/
-├── docs/                    # Phase documentation
-│   ├── 00-problem-statement.md      # ✅ Phase 0
-│   ├── 01-architecture-decisions.md # Phase 1 (ADR log)
-│   ├── 02-requirements.md           # Phase 1
-│   ├── 03-safety-rules.md           # Phase 1
-│   └── 04-production-readiness.md   # Phase 9+
-├── spec/                    # Frozen contracts (Phase 1)
-│   ├── openapi.yaml               # API contract
-│   ├── pack-format.md             # SQLite schema + manifest
-│   ├── gate-definitions.md        # 8 gates spec
-│   └── model-manifest.md          # Model pinning + upgrade
-├── src/                     # Implementation (Phases 2-7)
-│   ├── ingest/                    # Stage 1: PDF → chunks (zero LLM)
-│   ├── enrich/                    # Stage 2: NIM enrichment (optional)
-│   ├── indexer/                   # Stage 3: SQLite + vectors + signing
-│   ├── edge/                      # Runtime: search→rerank→verify→SSE
-│   ├── eval/                      # 8 fail-closed gates
-│   ├── pipeline/                  # Orchestrator
-│   ├── common/                    # Shared: NIM client, units, offline backends
-│   └── ui/                        # Test console (/ui/)
-├── tests/                   # Test suites
-│   ├── unit/
-│   ├── integration/
-│   ├── contract/
-│   └── ui-smoke/
-├── benchmarks/              # Hardware benchmarks (Phase 8)
-├── scripts/                 # Automation
-│   ├── setup.sh / setup.ps1       # Cross-platform setup
-│   ├── build-pack.sh
-│   ├── export-onnx.sh
-│   └── run-gates.sh
-├── golden/                  # Clinician golden set (Phase 10)
-├── samplefiles/             # Source PDFs (gitignored, download script)
-├── keys/                    # Ed25519 keys (gitignored, key ceremony docs)
-└── .github/workflows/       # CI/CD (Phase 9)
-```
-
----
-
-## 🚀 Quick Start
-
-### Prerequisites
-- Python 3.11+
-- Node.js 18+ (for UI smoke tests)
-- NVIDIA API key (optional, for live NIM builds) — get at [build.nvidia.com](https://build.nvidia.com)
-
-### Setup (All Platforms)
-```bash
-# macOS / Linux
-./scripts/setup.sh
-
-# Windows PowerShell
-.\scripts\setup.ps1
-
-# Windows CMD
-scripts\setup.bat
-```
-
-The interactive setup guides you through:
-1. Role selection (Builder / Edge Device / Client / All-in-One)
-2. Python check → virtual environment → requirements
-3. NVIDIA API key (optional)
-4. Signing keys (auto-generated dev keys)
-5. ONNX export (optional, requires GPU)
-
-### Run Tests
-```bash
-# Unit tests (31 tests)
-python -m unittest tests.unit -v
-
-# UI smoke tests (requires edge server on :8080)
-node tests/ui-smoke/index.mjs
-```
-
----
-
-## 🔑 Key Design Decisions
-
-| Decision | Rationale |
-|----------|-----------|
-| **Offline-first** | Field workers have no reliable internet |
-| **Build-time NIM only** | Edge runs ONNX exports; no cloud calls at runtime |
-| **Zero LLM in ingest** | Deterministic, auditable, no hallucination risk |
-| **Table-first retrieval** | One chunk per table; cell-level highlights (critical for dosing) |
-| **Fail-closed gates** | `not_run = fail`; release requires explicit pass |
-| **Signed atomic updates** | Root→CI Ed25519 chain; instant rollback |
-| **stdlib HTTP server** | No framework dependencies; minimal attack surface |
-
----
-
-## 📚 Documentation Index
-
-| Document | Phase | Purpose |
-|----------|-------|---------|
-| [Problem Statement](docs/00-problem-statement.md) | 0 | Clinical problem, users, constraints, success criteria, architecture diagrams |
-| [Architecture Decisions](docs/01-architecture-decisions.md) | 1 | ADR log, frozen contracts |
-| [Requirements](docs/02-requirements.md) | 1 | Functional + non-functional requirements |
-| [Safety Rules](docs/03-safety-rules.md) | 1 | 8 non-negotiable safety rules |
-| [Production Readiness](docs/04-production-readiness.md) | 9+ | Gaps, pilot criteria, Go/No-Go |
-| [Phased Migration Plan](../PHASED_MIGRATION_PLAN.md) | — | Full 10-phase plan with timelines |
-
----
-
-## 🧪 Testing Status
-
-| Suite | Tests | Status |
-|-------|-------|--------|
-| Unit (core) | 27 | ✅ Passing |
-| NIM Mock | 4 | ✅ Passing |
-| UI Smoke | 12 | ✅ Passing |
-| **Total** | **31** | **✅ 31/31** |
-
-*Tests run against TWB v1.1 prototype. Will be ported to `src/` structure in Phases 2–7.*
-
----
-
-## 🛣️ Roadmap
+## 🛣️ Roadmap Visual
 
 ```
 Phase 0 ──────► Phase 1 ──────► Phases 2-7 ──────► Phase 8/9 ──────► Phase 10 ──────► Pilot
-  ✅              🔄              🔄                  ⏳               ⏳              📅
+  ✅              ⏳              ⏳ (copy)            ⏳              ⏳ (blocker)    📅
 Problem         Contracts       Implementation      Infra + HW      Clinical      Field
-Statement       Frozen          (copy from TWB)     CI/CD           Validation    Pilot
+Statement       Frozen          (from prototype)    CI/CD           Validation    Pilot
 ```
 
-**Critical Path:** Clinical recruitment (Phase 10) + Hardware procurement (Phase 8) — start Day 1.
+**Critical path items (start Day 1):**
+1. **Clinical recruitment** (Phase 10) — 2 clinicians for golden set + tier sign-off
+2. **Hardware procurement** (Phase 8) — NVIDIA Jetson Orin Nano / Pi 5 + NVMe HAT (4–6 wk lead)
 
 ---
 
-## 🤝 Contributing
+## 🤝 How to Contribute
 
-1. Read the [Phased Migration Plan](PHASED_MIGRATION_PLAN.md)
-2. Pick a phase from the tracker above
-3. Follow [Agent Handoff Instructions](PHASED_MIGRATION_PLAN.md#agent-handoff-instructions)
-4. Open PR: `Phase N: <title>`
-5. Update this README's phase tracker on merge
+1. Read the [Phased Migration Plan](PHASED_MIGRATION_PLAN.md) (in source repo, to be copied in Phase 1)
+2. Check the **Phase Tracker** above for available work
+3. Phases 2–7: Copy from prototype → restructure → test
+4. Phases 1, 9, 10: New work — design first, then implement
+5. Open PR: `Phase N: <title>`
+6. Update this README's phase tracker on merge
 
 ---
 
 ## 📄 License
 
-Apache 2.0 — see [LICENSE](LICENSE) (to be added in Phase 1)
+Apache 2.0 — to be added in Phase 1
 
 ---
 
-## 🔗 Source Reference
+## 🔗 References
 
-- **Prototype:** [offline-medical-qa@9e5f42d](https://github.com/sai009/offline-medical-qa/commit/9e5f42d) (TWB v1.1)
+- **Prototype Repo:** [offline-medical-qa](https://github.com/sai009/offline-medical-qa) (private)
+- **Prototype Commit:** `9e5f42d` — v1.1 complete, 31/31 tests passing
 - **Architecture Spec:** [ARCHITECTURE.md](https://github.com/sai009/offline-medical-qa/blob/main/ARCHITECTURE.md)
-- **Handoff Doc:** [HANDOFF_DOCUMENTATION.md](https://github.com/sai009/offline-medical-qa/blob/main/HANDOFF_DOCUMENTATION.md)
+- **Handoff Doc:** [HANDOFF_DOCUMENTATION.md](https://github.com/sai009/offline-medical-qa/blob/main/HANDOFF_DOCUMENTATION.md) (ADR-1)
 
 ---
 
-*Last updated: Phase 0 complete — Problem Statement with Mermaid architecture diagrams committed.*
+*Last updated: Phase 0 complete. Repository contains only `docs/00-problem-statement.md`. All implementation phases pending.*
