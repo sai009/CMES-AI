@@ -29,7 +29,7 @@ This repository is a **phased migration** of the working TWB v1.1 prototype into
 
 | Phase | Title | Status | Type | Target |
 |-------|-------|--------|------|--------|
-| **0** | **Problem Statement** | ✅ **Done** | New work | Week 1 |
+| **0** | [**Problem Statement**](https://github.com/sai009/CMES-AI/blob/main/docs/00-problem-statement.md) | ✅ **Done** | New work | Week 1 |
 | **1** | Architecture & Contracts | ⏳ Planned | New work | Week 2 |
 | **2** | Ingestion Pipeline | ⏳ Planned | **Copy from prototype** | Week 3 |
 | **3** | Enrichment Pipeline | ⏳ Planned | **Copy from prototype** | Week 3 |
