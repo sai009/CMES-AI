@@ -8,6 +8,24 @@
 
 ---
 
+## ⚠️ CRITICAL SAFETY NOTICE
+
+> **This system has NOT been validated for clinical decision-making. Deployment to field workers for patient-care decisions could result in serious harm or loss of life.**
+>
+> **PROHIBITED USE CASES:** Emergency triage • Primary clinical decision support • Pediatric/neonatal dosing without independent validation • Polypharmacy/interaction checking • Any use without supervising clinician verification
+
+### Safety Documentation (Required Reading)
+
+| Document | Purpose | Status |
+|----------|---------|--------|
+| [SAFETY.md](SAFETY.md) | **Clinical safety assessment** — regulatory gaps, prohibited use cases, 10 critical gaps, high-risk scenarios, minimum requirements checklist | ✅ Complete |
+| [ARCHITECTURE_REVIEW.md](ARCHITECTURE_REVIEW.md) | **Technical architecture review** — RAG grounding mechanisms, LLM constrainment gaps vs. NotebookLM, 5 missing verification layers, recommended additions with code sketches | ✅ Complete |
+| [docs/03-safety-rules.md](docs/03-safety-rules.md) | **8 Non-negotiable safety rules (SR-01 to SR-08)** — code locations, gate enforcement, amendment process | ✅ Draft Complete |
+
+**All contributors must read SAFETY.md and ARCHITECTURE_REVIEW.md before making changes.**
+
+---
+
 ## 📋 Project Status: **Early Migration — Phase 0 Complete**
 
 This repository is a **phased migration** of the working TWB v1.1 prototype into a production-ready, team-maintainable codebase.
@@ -149,6 +167,8 @@ flowchart LR
 | [Architecture Decisions](docs/01-architecture-decisions.md) | 1 | ⏳ Planned — ADR log, frozen contracts |
 | [Requirements](docs/02-requirements.md) | 1 | ⏳ Planned |
 | [Safety Rules](docs/03-safety-rules.md) | 1 | ✅ **Draft Complete** — 8 non-negotiable rules (SR-01 to SR-08) with code locations |
+| **Safety Assessment** | — | ✅ **Complete** — [SAFETY.md](SAFETY.md) — 10 critical gaps, prohibited use cases, min requirements |
+| **Architecture Review** | — | ✅ **Complete** — [ARCHITECTURE_REVIEW.md](ARCHITECTURE_REVIEW.md) — 5 missing verification layers, code sketches |
 | [Production Readiness](docs/04-production-readiness.md) | 9+ | ⏳ Planned |
 
 ---
