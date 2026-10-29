@@ -52,7 +52,8 @@ This repository is a **phased migration** of the working TWB v1.1 prototype into
 CMES-AI/
 ├── README.md                          # This file
 ├── docs/
-│   ├── 00-problem-statement.md        # ✅ ONLY FILE THAT EXISTS
+│   ├── 00-problem-statement.md        # ✅ Phase 0 Complete
+│   ├── 03-safety-rules.md             # ✅ Draft Complete (Phase 1 early)
 │   └── assets/                        # Architecture frames from prototype video
 ├── spec/                              # 📭 Empty (Phase 1)
 ├── src/                               # 📭 Empty (Phases 2-7)
@@ -147,7 +148,7 @@ flowchart LR
 | [Problem Statement](docs/00-problem-statement.md) | 0 | ✅ **Complete** — clinical problem, users, constraints, 3 Mermaid diagrams |
 | [Architecture Decisions](docs/01-architecture-decisions.md) | 1 | ⏳ Planned — ADR log, frozen contracts |
 | [Requirements](docs/02-requirements.md) | 1 | ⏳ Planned |
-| [Safety Rules](docs/03-safety-rules.md) | 1 | ⏳ Planned |
+| [Safety Rules](docs/03-safety-rules.md) | 1 | ✅ **Draft Complete** — 8 non-negotiable rules (SR-01 to SR-08) with code locations |
 | [Production Readiness](docs/04-production-readiness.md) | 9+ | ⏳ Planned |
 
 ---

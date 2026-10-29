@@ -295,6 +295,7 @@ sequenceDiagram
 - ILCOR Consensus on CPR/ECC (2020)
 - MSF Clinical Guidelines (2022)
 - National Standard Treatment Guidelines (per country)
+- [CMES-AI Safety Rules](../03-safety-rules.md) — 8 non-negotiable rules (SR-01 to SR-08)
 
 ---
 
