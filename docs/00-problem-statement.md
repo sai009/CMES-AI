@@ -44,7 +44,7 @@ flowchart TB
         BUILDER -->|"1. Ingest"| PDF
         BUILDER -->|"2. Enrich\n(NIM Chat)"| NIM
         BUILDER -->|"3. Embed\n(NIM Embed)"| NIM
-        BUILDER -->|"4. Index & Sign"| PACK["Signed SQLite Pack\nkb-*.dev"]
+        BUILDER -->|"4. Index & Sign"| PACK["Signed SQLite Pack\nkb-*.dev\n(kb.sqlite + manifest + blobs)"]
     end
 
     subgraph TRANSPORT["📦 TRANSPORT"]
@@ -54,11 +54,12 @@ flowchart TB
     subgraph EDGE["📱 EDGE DEVICE (Runtime)"]
         direction TB
         EDGE_IN["Pack Ingest"]
+        UPDATER["Updater:\nverify → stage → swap\n(atomic rollback)"]
         SERVER["Edge Server\nstdlib HTTP + SSE"]
         ONNX["ONNX Models\nembed.onnx, rerank.onnx"]
         UI["Test Console\n/ui/"]
         
-        EDGE_IN --> SERVER
+        EDGE_IN --> UPDATER --> SERVER
         SERVER --> ONNX
         SERVER --> UI
     end
@@ -114,17 +115,18 @@ flowchart LR
 
     subgraph STAGE2["Stage 2: Enrich (Optional NIM)"]
         CHUNKS2["Chunks"]
-        NIM_CHAT["NIM Chat Model\n(nemotron-70b)"]
+        NIM_CHAT["NIM Chat Model\n(meta/llama-3.1-70b-instruct)"]
         ENRICHED["Enriched Chunks\nAcronyms, Defs, Dosage\n(build/enrich/)"]
         CACHE["Enrichment Cache\nCost Control"]
     end
 
     subgraph STAGE3["Stage 3: Index & Pack"]
         ENRICHED2["Enriched Chunks"]
-        EMBED["NIM Embed Model\n(llama-3.2-nv-embedqa)"]
+        EMBED["NIM Embed Model\n(nvidia/llama-3.2-nv-embedqa-1b-v2)"]
         VECTORS["HNSW Vectors"]
         FTS5["SQLite FTS5"]
         MANIFEST["Manifest.json\nModel IDs, Counts, Git SHA"]
+        GATES["8 Fail-Closed Gates\n(fail-closed semantics)"]
         SIGN["Ed25519 Sign\nRoot → CI Chain"]
         PACK_OUT["Signed Pack\nkb-1.x.x-dev/"]
     end
@@ -139,7 +141,7 @@ flowchart LR
     ENRICHED2 --> FTS5
     VECTORS --> MANIFEST
     FTS5 --> MANIFEST
-    MANIFEST --> SIGN --> PACK_OUT
+    MANIFEST --> GATES --> SIGN --> PACK_OUT
 
     style STAGE1 fill:#e3f2fd,stroke:#1976d2,stroke-width:2px
     style STAGE2 fill:#fff3e0,stroke:#f57c00,stroke-width:2px
@@ -179,8 +181,13 @@ sequenceDiagram
         TABLE-->>SERVER: Table + cell bboxes
     end
     SERVER->>VERIFY: Check citations, dose refusal, abstain
-    VERIFY-->>SERVER: Verified + abstain decision
-    SERVER-->>UI: Stream answer (SSE)
+    alt Abstain (no citation / unsafe dose)
+        VERIFY-->>SERVER: Abstain decision
+        SERVER-->>UI: "Not found" + reason
+    else Verified
+        VERIFY-->>SERVER: Verified + cited answer
+        SERVER-->>UI: Stream answer (SSE)
+    end
     UI-->>HW: Cited answer + highlights + page image
 ```
 
