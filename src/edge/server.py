@@ -174,6 +174,9 @@ def make_handler(app: App):
                 self._err(400, "bad request", "bad_request")
 
         def _static(self, rel):
+            # Reject path traversal attempts before touching the filesystem
+            if ".." in rel.split("/") or rel.startswith("/") or "\\" in rel:
+                return self._err(404, "not found", "not_found")
             base = (ROOT / "ui").resolve()
             f = (base / rel).resolve()
             try:
