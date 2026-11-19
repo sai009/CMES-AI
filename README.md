@@ -6,6 +6,14 @@
 [![Source](https://img.shields.io/badge/Source-TWB%20v1.1%20Prototype-orange)](https://github.com/sai009/offline-medical-qa)
 [![License](https://img.shields.io/badge/License-MIT-blue)]()
 
+> **🛑 This is NOT the canonical repository.**
+>
+> Canonical repo: [techieswithoutborders/CMES-AI](https://github.com/techieswithoutborders/CMES-AI)
+>
+> This is a personal fork / portfolio mirror maintained by [sai009](https://github.com/sai009).
+> **Issues and pull requests should be opened on the canonical repo, not here.**
+> PRs and issues on this repo will not be answered or merged.
+
 ---
 
 ## ⚠️ CRITICAL SAFETY NOTICE
