@@ -49,11 +49,11 @@ This repository is a **phased migration** of the working TWB v1.1 prototype into
 |-------|-------|--------|------|--------|
 | **0** | [**Problem Statement**](https://github.com/sai009/CMES-AI/blob/main/docs/00-problem-statement.md) | ✅ **Done** | New work | Week 1 |
 | **1** | Architecture & Contracts | ⏳ Planned | New work | Week 2 |
-| **2** | Ingestion Pipeline | ⏳ Planned | **Copy from prototype** | Week 3 |
-| **3** | Enrichment Pipeline | ⏳ Planned | **Copy from prototype** | Week 3 |
-| **4** | Indexing & Packing | ⏳ Planned | **Copy from prototype** | Week 4 |
-| **5** | Edge Runtime | ⏳ Planned | **Copy from prototype** | Week 4 |
-| **6** | Evaluation Gates | ⏳ Planned | **Copy from prototype** | Week 4 |
+| **2** | Ingestion Pipeline | ✅ **Done** | **Copy from prototype** | Week 3 |
+| **3** | Enrichment Pipeline | ✅ **Done** | **Copy from prototype** | Week 3 |
+| **4** | Indexing & Packing | ✅ **Done** | **Copy from prototype** | Week 4 |
+| **5** | Edge Runtime | ✅ **Done** | **Copy from prototype** | Week 4 |
+| **6** | Evaluation Gates | ✅ **Done** | **Copy from prototype** | Week 4 |
 | **7** | Test Console (UI) | ✅ **Done** | **Copy from prototype** | Week 4 |
 | **8** | Benchmarks & Hardware | ⏳ Planned | New work + HW | Week 6–10 |
 | **9** | CI/CD & Release Engineering | ⏳ Planned | New work | Week 6–8 |
@@ -69,20 +69,24 @@ This repository is a **phased migration** of the working TWB v1.1 prototype into
 ```
 CMES-AI/
 ├── README.md                          # This file
-├── docs/
-│   ├── 00-problem-statement.md        # ✅ Phase 0 Complete
-│   ├── 03-safety-rules.md             # ✅ Draft Complete (Phase 1 early)
-│   └── assets/                        # Architecture frames from prototype video
+├── docs/                              # Phase 0 + safety + architecture diagrams
+├── ingest/                            # Phase 2: PDF→chunks, zero LLM
+├── enrich/                            # Phase 3: NIM enrichment (optional)
+├── indexer/                           # Phase 4: SQLite FTS5 + HNSW + Ed25519 signing
+├── edge/                              # Phase 5: stdlib HTTP server + updater
+├── eval/                              # Phase 6: 8 fail-closed gates + golden sets
+├── common/                            # Shared: NIM, units, lang, http, util
+├── pipeline/                          # Pipeline orchestrator
+├── src/                               # Phase 7: UI (index.html, compare.html, DESIGN.md) + edge/server.py
+├── tests/                             # Phase 7: ui_smoke.mjs + unit tests
+├── benchmarks/                        # Phase 8: hardware benchmarks (script ready)
 ├── spec/                              # 📭 Empty (Phase 1)
-├── src/                               # Phase 2-7 code (ui/, edge/ copied from prototype)
-├── tests/                             # Phase 7: ui_smoke.mjs
-├── benchmarks/                        # 📭 Empty
-├── scripts/                           # 📭 Empty
+├── scripts/                           # 📭 Empty (Phase 9)
 ├── golden/                            # 📭 Empty (Phase 10)
 └── .github/workflows/                 # 📭 Empty (Phase 9)
 ```
 
-> **Phase 7: Test Console (UI)** source code copied from prototype (twb `mesh` branch @ `9928d3f`, from offline-medical-qa@9e5f42d). Remaining phases pending.
+> **Phases 0, 2–7 complete.** Source code copied from prototype (twb `mesh` branch @ `9928d3f`, from offline-medical-qa@9e5f42d). Phase 1 (contracts) and Phases 8–10 pending.
 
 ---
 
@@ -214,4 +218,4 @@ MIT
 
 ---
 
-*Last updated: Phase 0 + Phase 7 complete. Repository contains Phase 0 docs + Phase 7 UI/test console code copied from offline-medical-qa@9e5f42d (twb `mesh` branch). All remaining implementation phases pending.*
+*Last updated: Phases 0, 2–7 complete. Repository contains Phase 0 docs + Phases 2–7 code (ingest, enrich, indexer, edge, eval, common, pipeline, UI, tests) copied from offline-medical-qa@9e5f42d (twb `mesh` branch). Phase 1 (contracts) and Phases 8–10 pending.*
