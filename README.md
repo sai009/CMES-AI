@@ -194,12 +194,13 @@ Statement       Frozen          (from prototype)    CI/CD           Validation  
 
 ## 🤝 How to Contribute
 
-1. Read the [Phased Migration Plan](PHASED_MIGRATION_PLAN.md) (in source repo, to be copied in Phase 1)
-2. Check the **Phase Tracker** above for available work
-3. Phases 2–7: Copy from prototype → restructure → test
-4. Phases 1, 9, 10: New work — design first, then implement
-5. Open PR: `Phase N: <title>`
-6. Update this README's phase tracker on merge
+1. Check the **Phase Tracker** above for available work (phases 1, 8, 9, 10 are open)
+2. Phases 2–7 code is already migrated from the prototype — review and test
+3. Phases 1, 9, 10: design first, then implement
+4. Open PR: `Phase N: <title>`
+5. Update this README's phase tracker on merge
+
+Maintainer: [sai009](https://github.com/sai009) (volunteer, Techies Without Borders)
 
 ---
 
@@ -211,7 +212,7 @@ MIT
 
 ## 🔗 References
 
-- **Prototype Repo:** [offline-medical-qa](https://github.com/sai009/offline-medical-qa) (private)
+- **Prototype Repo:** [offline-medical-qa](https://github.com/sai009/offline-medical-qa) (private — source of Phases 2–7 code)
 - **Prototype Commit:** `9e5f42d` — v1.1 complete, 31/31 tests passing
 - **Architecture Spec:** [ARCHITECTURE.md](https://github.com/sai009/offline-medical-qa/blob/main/ARCHITECTURE.md)
 - **Handoff Doc:** [HANDOFF_DOCUMENTATION.md](https://github.com/sai009/offline-medical-qa/blob/main/HANDOFF_DOCUMENTATION.md) (ADR-1)
