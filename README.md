@@ -4,7 +4,7 @@
 
 [![Phase](https://img.shields.io/badge/Phase-0%20Complete-blue)]()
 [![Source](https://img.shields.io/badge/Source-TWB%20v1.1%20Prototype-orange)](https://github.com/sai009/offline-medical-qa)
-[![License](https://img.shields.io/badge/License-Apache%202.0-green)]()
+[![License](https://img.shields.io/badge/License-MIT-blue)]()
 
 ---
 
@@ -54,7 +54,7 @@ This repository is a **phased migration** of the working TWB v1.1 prototype into
 | **4** | Indexing & Packing | ⏳ Planned | **Copy from prototype** | Week 4 |
 | **5** | Edge Runtime | ⏳ Planned | **Copy from prototype** | Week 4 |
 | **6** | Evaluation Gates | ⏳ Planned | **Copy from prototype** | Week 4 |
-| **7** | Test Console (UI) | ⏳ Planned | **Copy from prototype** | Week 4 |
+| **7** | Test Console (UI) | ✅ **Done** | **Copy from prototype** | Week 4 |
 | **8** | Benchmarks & Hardware | ⏳ Planned | New work + HW | Week 6–10 |
 | **9** | CI/CD & Release Engineering | ⏳ Planned | New work | Week 6–8 |
 | **10** | Clinical Validation | ⏳ Planned | **New work — blocker** | Week 4–12 |
@@ -74,15 +74,15 @@ CMES-AI/
 │   ├── 03-safety-rules.md             # ✅ Draft Complete (Phase 1 early)
 │   └── assets/                        # Architecture frames from prototype video
 ├── spec/                              # 📭 Empty (Phase 1)
-├── src/                               # 📭 Empty (Phases 2-7)
-├── tests/                             # 📭 Empty
+├── src/                               # Phase 2-7 code (ui/, edge/ copied from prototype)
+├── tests/                             # Phase 7: ui_smoke.mjs
 ├── benchmarks/                        # 📭 Empty
 ├── scripts/                           # 📭 Empty
 ├── golden/                            # 📭 Empty (Phase 10)
 └── .github/workflows/                 # 📭 Empty (Phase 9)
 ```
 
-> **No setup scripts, no source code, no tests yet.** Those come from the prototype in Phases 2–7.
+> **Phase 7: Test Console (UI)** source code copied from prototype (twb `mesh` branch @ `9928d3f`, from offline-medical-qa@9e5f42d). Remaining phases pending.
 
 ---
 
@@ -201,7 +201,7 @@ Statement       Frozen          (from prototype)    CI/CD           Validation  
 
 ## 📄 License
 
-Apache 2.0 — to be added in Phase 1
+MIT
 
 ---
 
@@ -214,4 +214,4 @@ Apache 2.0 — to be added in Phase 1
 
 ---
 
-*Last updated: Phase 0 complete. Repository contains `docs/00-problem-statement.md` + `docs/assets/*.png` (6 architecture frames from prototype video). All implementation phases pending.*
+*Last updated: Phase 0 + Phase 7 complete. Repository contains Phase 0 docs + Phase 7 UI/test console code copied from offline-medical-qa@9e5f42d (twb `mesh` branch). All remaining implementation phases pending.*
